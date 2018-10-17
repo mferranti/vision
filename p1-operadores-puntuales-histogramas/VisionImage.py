@@ -30,6 +30,17 @@ class VisionImage:
   def threshold(self, p):
     return VisionImage(np.where(self.img < p, 0, 255))
 
+  def hist(self):
+    h = np.zeros(256);
+    n, m = self.img.shape;
+    for i in range(1, n):
+      for j in range(1, m):
+        h[self.img[i,j]] = h[self.img[i,j]] + 1
+    return h
+
+  def contrast(self, p, e):
+    return VisionImage(np.where(self.img > p, self.img * e, self.img / e))
+
   def save(self, filename):
     cv2.imwrite(filename, self.img)
 
