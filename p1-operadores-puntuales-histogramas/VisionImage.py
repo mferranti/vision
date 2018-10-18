@@ -33,13 +33,31 @@ class VisionImage:
   def hist(self):
     h = np.zeros(256);
     n, m = self.img.shape;
-    for i in range(1, n):
-      for j in range(1, m):
-        h[self.img[i,j]] = h[self.img[i,j]] + 1
+    for i in range(0, n - 1):
+      for j in range(0, m - 1):
+        h[self.img[i,j]] += 1
     return h
 
   def contrast(self, p, e):
     return VisionImage(np.where(self.img > p, self.img * e, self.img / e))
+
+  def ecualize(self):
+    n, m = self.img.shape;
+    res = np.zeros((n, m));
+    probOrig = self.hist() / (m * n);
+    acumOrig = np.cumsum(probOrig);
+    acumEq = np.cumsum(np.full(256, 1)) / 256;
+    transform = np.zeros(256);
+    for k in range(0, 255):
+      for i in range(0, 255):
+        diff = acumEq[255 - i] - acumOrig[k]
+        if (diff > 0):
+          transform[k] = 255 - i;
+    for i in range(0, m):
+      for j in range(0, n):
+        res[i, j] = transform[self.img[i, j]];
+
+    return VisionImage(res);
 
   def save(self, filename):
     cv2.imwrite(filename, self.img)
