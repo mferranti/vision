@@ -23,5 +23,4 @@ plt.show()
 
 # en el canal de saturacion es mas distinguible el granulado
 # en el canal de tono son mas distinguibles los bordes
-
 # en el canal de saturacion afectan mas los bordes difuminados
