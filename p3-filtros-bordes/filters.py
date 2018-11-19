@@ -34,6 +34,10 @@ def apply_filter_to_channel(img, filter):
 
   return np.array(new_channel, dtype='uint8')
 
+def apply_filter_one_channel(image, filter):
+  new_image = apply_filter_to_channel(image, filter)
+
+  return new_image
 
 def apply_filter(image, filter):
   new_image = image.copy()
@@ -42,3 +46,12 @@ def apply_filter(image, filter):
   new_image[:, :, 2] = apply_filter_to_channel(image[:, :, 2], filter)
 
   return new_image
+
+def smooth_filter(image):
+  smooth_image = np.matrix('1 2 1; 2 4 2; 1 2 1', dtype=np.float32)/16
+  return apply_filter(image, smooth_image)
+
+def sharpen_filter(image):
+  laplacian_filter = np.matrix('1 1 1; 1 -8 1; 1 1 1', dtype=np.float32)
+  sharpen_image = apply_filter(smooth_filter(image), laplacian_filter)
+  return cv2.subtract(image, sharpen_image)
