@@ -59,6 +59,14 @@ class VisionImage:
 
     return VisionImage(res);
 
+  def bitPlane(self, p):
+    n, m = self.img.shape;
+    res = np.zeros((n, m));
+    for i in range(0, m):
+      for j in range(0, n):
+        res[i, j] = np.uint8(np.binary_repr(self.img[i, j], 8)[p]);
+    return VisionImage(res).threshold(1)
+
   def save(self, filename):
     cv2.imwrite(filename, self.img)
 
