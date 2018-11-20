@@ -41,9 +41,12 @@ def apply_filter_one_channel(image, filter):
 
 def apply_filter(image, filter):
   new_image = image.copy()
-  new_image[:, :, 0] = apply_filter_to_channel(image[:, :, 0], filter)
-  new_image[:, :, 1] = apply_filter_to_channel(image[:, :, 1], filter)
-  new_image[:, :, 2] = apply_filter_to_channel(image[:, :, 2], filter)
+  if (len(new_image.shape) == 3):
+    new_image[:, :, 0] = apply_filter_to_channel(image[:, :, 0], filter)
+    new_image[:, :, 1] = apply_filter_to_channel(image[:, :, 1], filter)
+    new_image[:, :, 2] = apply_filter_to_channel(image[:, :, 2], filter)
+  else:
+    new_image = apply_filter_to_channel(image, filter)
 
   return new_image
 
@@ -55,3 +58,22 @@ def sharpen_filter(image):
   laplacian_filter = np.matrix('1 1 1; 1 -8 1; 1 1 1', dtype=np.float32)
   sharpen_image = apply_filter(smooth_filter(image), laplacian_filter)
   return cv2.subtract(image, sharpen_image)
+
+def median_filter(img, size):
+  # res = img.copy()
+  res = np.zeros(img.shape)
+  rows = img.shape[0]
+  cols = img.shape[1]
+  border_size = math.floor(size / 2)
+
+  print(border_size)
+  for i in range(border_size, rows - border_size):
+    for j in range(border_size, cols - border_size):
+      submatrix = img[
+        border_size - i : border_size + i,
+        border_size - j : border_size + j
+      ]
+      value = np.median(submatrix)
+      res[i][j] = value
+  return np.uint8(res)
+
