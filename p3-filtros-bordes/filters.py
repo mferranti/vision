@@ -60,6 +60,30 @@ def sharpen_filter(image):
   return cv2.subtract(image, sharpen_image)
 
 def median_filter(img, size):
+  new_channel = img.copy()
+  rows = img.shape[0]
+  cols = img.shape[1]
+  border_size = math.floor(size / 2)
+
+  for i in range(border_size, rows - border_size):
+    for j in range(border_size, cols - border_size):
+      row_from = i - border_size
+      col_from = j - border_size
+      row_to = i + border_size
+      col_to = j + border_size
+
+      if (size % 2 != 0):
+        row_to = row_to + 1
+      if (size % 2 != 0):
+        col_to = col_to + 1
+
+      new_channel[i][j] = np.array(math.floor(np.median(img[row_from : row_to, col_from : col_to])), dtype='float32')
+      
+
+  return np.array(new_channel, dtype='uint8')
+
+"""
+def median_filter(img, size):
   # res = img.copy()
   res = np.zeros(img.shape)
   rows = img.shape[0]
@@ -76,4 +100,4 @@ def median_filter(img, size):
       value = np.median(submatrix)
       res[i][j] = value
   return np.uint8(res)
-
+"""
